@@ -4,10 +4,34 @@
  */
 package com.mycompany.pixelcraft;
 
+//Import the necessary libraries
+import javax.imageio.ImageIO; 
+import java.awt.image.BufferedImage; 
+import java.io.File; 
+import java.io.IOException; 
 /**
  *
- * @author shamd
+ * @author Koosha Shamdani
  */
-public class Converter {
+public abstract class Converter {
     
+    public void convert(String inputFileName, String outputFileName) throws IOException{
+        //Read the source image from disk
+        File inputFile = new File(inputFileName); 
+        BufferedImage originalImage = ImageIO.read(inputFile); 
+        
+        if (originalImage == null){
+            throw new IOException("Could not raed imnage file: " + inputFileName); 
+        }
+        
+        //Delegate the actual pixel transformation to the subclasses
+        BufferedImage processedImage = process(originalImage); 
+        
+        //Save the result as a PNG file
+        File outputFile = new File(outputFileName); 
+        ImageIO.write(processedImage, "PNG", outputFile); 
+        System.out.println("Saved processed image to : " + outputFileName);
+    }
+    
+    protected abstract BufferedImage process(BufferedImage image);
 }

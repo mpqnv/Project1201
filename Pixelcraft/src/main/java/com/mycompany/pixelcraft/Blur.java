@@ -3,11 +3,13 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package com.mycompany.pixelcraft;
+import java.awt.image.BufferedImage;
 
 /**
  *
  * @author shamd
  */
-public class Blur {
+public class Blur extends Converter{
+    
     
 }
