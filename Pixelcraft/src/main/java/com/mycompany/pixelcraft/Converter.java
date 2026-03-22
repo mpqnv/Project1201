@@ -21,7 +21,7 @@ public abstract class Converter {
         BufferedImage originalImage = ImageIO.read(inputFile); 
         
         if (originalImage == null){
-            throw new IOException("Could not read imnage file: " + inputFileName); 
+            throw new IOException("Could not read image file: " + inputFileName); 
         }
         
         //Delegate the actual pixel transformation to the subclasses

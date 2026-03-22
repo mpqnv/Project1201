@@ -19,34 +19,23 @@ public class Invert extends Converter {
 
         // Create a new image to store the inverted result
         BufferedImage result = new BufferedImage(width, height, image.getType());
-
-        // Loop through every pixel in the image (row by row)
-        for (int y = 0; y < height; y++) {
-            for (int x = 0; x < width; x++) {
-
-                // Get the RGB value of the current pixel
-                int rgb = image.getRGB(x, y);
-
-                // Extract alpha, red, green, and blue values using bit shifting
-                int a = (rgb >> 24) & 255; // transparency
-                int r = (rgb >> 16) & 255; // red
-                int g = (rgb >> 8) & 255;  // green
-                int b = rgb & 255;         // blue
-
-                // Invert each color channel
-                int invR = 255 - r;
-                int invG = 255 - g;
-                int invB = 255 - b;
-
-                // Combine the inverted values back into a single RGB integer
-                int invertedRgb = (a << 24) | (invR << 16) | (invG << 8) | invB;
-
-                // Set the new pixel in the result image
-                result.setRGB(x, y, invertedRgb);
-            }
-        }
-
-        // Return the final inverted image
-        return result;
+        
+        processPixel(image, result, 0, 0, width, height) ;
+        return result; 
     }
+
+        private void processPixel(BufferedImage src, BufferedImage dst, int x, int y, int width, int height){
+            if (y >= height) return; 
+            
+            int rgb = src.getRGB(x, y); 
+            int a = (rgb >> 24) & 255; 
+            int r = (rgb >> 16) & 255; 
+            int g = (rgb >> 8) & 255; 
+            int b = rgb & 255; 
+            
+            dst.setRGB(x, y, (a << 24) | ((255-r) << 16) | ((255-g) << 8) | (255-b));
+            
+            if (x + 1 < width) processPixel(src, dst, x+1, y, width, height); 
+            else processPixel(src, dst, 0, y +1, width, height); 
+        }
 }

@@ -26,28 +26,23 @@ public class Brightness extends Converter{
         return result; 
     }
     
-    private void processPixel(BufferedImage src, BufferedImage dst, int x, int y, int width, int height){
-        
-        //Base case
-        if (y >= height) return; 
-        
-        ARGB p = new ARGB(src.getRGB(x, y)); 
-        ARGB bright = new ARGB(
-        p.alpha, 
+private void processPixel(BufferedImage src, BufferedImage dst, int x, int y, int width, int height) {
+    
+    // Base case
+    if (y >= height) return;
+
+    ARGB p = new ARGB(src.getRGB(x, y));
+    ARGB bright = new ARGB(
+        p.alpha,
         ARGB.clamp(p.red   + DELTA),
         ARGB.clamp(p.green + DELTA),
         ARGB.clamp(p.blue  + DELTA)
-        ); 
-        dst.setRGB(x, y, bright.toInt());
-        
-        //Advance to next pixel
-        if (x+1 < width){
-            processPixel(src, dst, x+1, y, width, height); 
-        }
-        
-        else{
-            processPixel(src, dst, 0, y+1, width, height); 
-        }
-    }
+    );
+    dst.setRGB(x, y, bright.toInt());
+
+    // Recurse to the next pixel
+    if (x + 1 < width) processPixel(src, dst, x + 1, y, width, height);
+    else processPixel(src, dst, 0, y + 1, width, height);
+}
     
 }
