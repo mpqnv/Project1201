@@ -6,16 +6,22 @@ package com.mycompany.pixelcraft;
 import java.awt.image.BufferedImage; 
 
 /**
- *Converts a color image to grayscale by replacing erach pixel's red, green, and blue channels with their artihmetic average,
- * while preserving the original alpha (transparency) channel/ 
- * 
+ * Converts a colour image to grayscale by replacing each pixel's red, green,
+ * and blue channels with their arithmetic average, while preserving the original
+ * alpha (transparency) channel.
+ *
  * Formula: gray = (R + G + B) / 3
- * 
- * Strategy: Iterative (nested for loops over every pixel).
+ *
+ * Implementation strategy: iterative (nested for loops over every pixel).
  * @author Alper Diker
  */
 public class Grayscale extends Converter {
-
+    /**
+     * Converts the given image to grayscale.
+     *
+     * @param image the source image
+     * @return a new grayscale image of the same dimensions
+     */
     @Override
     protected BufferedImage process(BufferedImage image) {
         int width = image.getWidth();

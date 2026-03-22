@@ -5,7 +5,23 @@
 package com.mycompany.pixelcraft;
 import java.awt.image.BufferedImage;
 /**
+ ** Highlights the edges in an image using the Sobel operator, which is a classic
+ * technique from image processing that approximates the image gradient.
  *
+ * The algorithm:
+ *
+ *   Convert the source image to grayscale (luminance only).
+ *   For each pixel, convolve the 3×3 neighbourhood with the horizontal
+ *   Sobel kernel (Gx) and the vertical Sobel kernel (Gy).
+ *   Compute the gradient magnitude: {@code M = clamp(|Gx| + |Gy|)}.
+ *   Write a white pixel with magnitude M as its alpha (on a black background) so edges appear bright against a dark background.
+ * 
+ *
+ * Border pixels whose 3×3 neighbourhood extends outside the image are set to
+ * black (no edge information).
+ *
+ * Implementation strategy: iterative (nested for loops over every pixel with
+ * an inner loop over the 3×3 Sobel kernel).
  * @author Koosha Shamdani
  */
 public class Edgedetect extends Converter{
@@ -21,7 +37,13 @@ public class Edgedetect extends Converter{
         {0, 0, 0},
         {1, 2, 1}
     };
-    
+
+    /**
+     * Applies Sobel edge detection to the given image.
+     *
+     * @param image the source image
+     * @return a new image where bright pixels indicate detected edges
+     */
     @Override
     protected BufferedImage process(BufferedImage image){
         int width = image.getWidth(); 
@@ -64,6 +86,15 @@ public class Edgedetect extends Converter{
         return result; 
     }
     
+    /**
+     * Converts the image to a 2D array of luminance values (grayscale).
+     * Uses the standard luminance formula: 0.299*R + 0.587*G + 0.114*B.
+     *
+     * @param image  the source image
+     * @param width  image width
+     * @param height image height
+     * @return a height×width array of integer luminance values in [0, 255]
+     */
     private int[][] buildGrayMap(BufferedImage image, int width, int height){
         int[][] gray = new int[height][width]; 
         for (int y = 0; y < height; y++){

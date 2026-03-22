@@ -6,13 +6,28 @@ package com.mycompany.pixelcraft;
 import java.awt.image.BufferedImage;
 
 /**
+ *Applies a mosaic / "pixelation" effect by dividing the image into square
+ * tiles and filling every pixel in each tile with the average colour of that tile.
+ * This simulates the appearance of a very low resolution image scaled up.
  *
+ *Tiles near the right or bottom edge may be smaller than {@value #TILE_SIZE}
+ * pixels if the image dimensions are not exact multiples of the tile size; they
+ * are handled correctly by clamping to the image bounds.
+ *
+ *Implementation strategy: iterative; two levels of nested loops: one over
+ * tiles and one over the pixels within each tile. The per tile average is
+ * computed in a separate helper to keep the logic clear.
  * @author Koosha Shamdani
  */
 public class Pixelate extends Converter{
     
     private static final int TILE_SIZE = 15; 
-    
+    /**
+     * Applies the pixelation effect to the given image.
+     *
+     * @param image the source image
+     * @return a new pixelated image of the same dimensions
+     */
     @Override
     protected BufferedImage process(BufferedImage image){
         int width = image.getWidth(); 
@@ -41,7 +56,16 @@ public class Pixelate extends Converter{
         return result; 
     }
     
-    
+    /**
+     * Computes the average ARGB colour of a rectangular region in the image.
+     *
+     * @param image the source image
+     * @param x0    left boundary (inclusive)
+     * @param y0    top boundary (inclusive)
+     * @param x1    right boundary (exclusive)
+     * @param y1    bottom boundary (exclusive)
+     * @return the average colour as an {@link ARGB} instance
+     */
     private ARGB averageColour(BufferedImage image, int x0, int y0, int x1, int y1){
         long sumA = 0, sumR = 0, sumG = 0, sumB = 0; 
         int count = 0; 

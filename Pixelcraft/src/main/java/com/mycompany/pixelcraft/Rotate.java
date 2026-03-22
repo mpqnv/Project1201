@@ -5,11 +5,25 @@
 package com.mycompany.pixelcraft;
 import java.awt.image.BufferedImage;
 /**
+ * Rotates the image 90 degrees clockwise.
  *
+ * For a source pixel at (x, y) in an image of size W × H, the destination
+ * coordinates in the rotated image (H × W) are:
+ * 
+ *   destX = (H - 1) - y
+ *   destY = x
+ * 
+ *
+ * Implementation strategy: iterative (nested for loops over every pixel).
  * @author Koosha Shamdani
  */
 public class Rotate extends Converter{
-    
+    /**
+     * Rotates the image 90 degrees clockwise.
+     *
+     * @param image the source image
+     * @return a new image that is the 90 degrees clockwise rotation of the source
+     */
     @Override
     protected BufferedImage process(BufferedImage image){
         int srcWidth = image.getWidth(); 

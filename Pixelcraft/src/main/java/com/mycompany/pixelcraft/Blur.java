@@ -6,7 +6,15 @@ package com.mycompany.pixelcraft;
 import java.awt.image.BufferedImage;
 
 /**
+ * Applies a simple box blur effect to the image by replacing each pixel's
+ * colour with the average colour of its surrounding neighbourhood (including
+ * itself). A 5×5 kernel radius is used to produce a clearly visible blur.
  *
+ * Pixels near the border use only the valid neighbours that fall within the
+ * image bounds, so no special padding is needed.
+ *
+ * Implementation strategy: iterative (nested for loops over every pixel,
+ * with an inner loop over the blur kernel).
  * @author Koosha Shamdani
  */
 public class Blur extends Converter{
@@ -14,6 +22,12 @@ public class Blur extends Converter{
      //Half size of the sqare blur karnel
     private static final int RADIUS = 2; 
     
+    /**
+     * Applies a box blur to the given image.
+     *
+     * @param image the source image
+     * @return a new blurred image of the same dimensions
+     */
     
     @Override
     protected BufferedImage process(BufferedImage image){

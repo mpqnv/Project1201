@@ -6,12 +6,22 @@ package com.mycompany.pixelcraft;
 import java.awt.image.BufferedImage; 
 
 /**
- *Mirrors the image along its vertical centre axis (left to right / right to left flip).
+ * Mirrors the image along its vertical centre axis (left to right flip and vice versa).
+ *
+ * For a source pixel at column x in an image of width W, the destination
+ * column is {@code (W - 1) - x}. The row (y) is unchanged.
+ *
+ * Implementation strategy: iterative (nested for-loops over every pixel).
  * 
  * @author Alper Diker
  */
 public class Fliphorizontal extends Converter {
-
+    /**
+     * Flips the image horizontally (mirror left to right and vice versa).
+     *
+     * @param image the source image
+     * @return a new image that is the horizontal mirror of the source
+     */
     @Override
     protected BufferedImage process(BufferedImage image) {
         int width = image.getWidth();

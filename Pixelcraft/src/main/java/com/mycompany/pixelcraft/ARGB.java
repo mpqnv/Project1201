@@ -5,7 +5,7 @@
 package com.mycompany.pixelcraft;
 
 /**
- * *Represents a pixel's colour using the ARGB colour model.
+ * Represents a pixel's colour using the ARGB colour model.
  * Each channel (alpha, red, green, blue) is stored as an integer in the range [0, 250].
  * Provides conversion to and from the package integer format used by BufferedImage.
  * @author Koosha Shamdani

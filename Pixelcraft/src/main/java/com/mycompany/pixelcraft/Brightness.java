@@ -6,13 +6,27 @@ package com.mycompany.pixelcraft;
 import java.awt.image.BufferedImage;
 
 /**
+ ** Increases the brightness of the image by adding a fixed offset to each
+ * colour channel (red, green, and blue). Values are clamped to [0, 255] so
+ * that no channel overflows. The alpha channel is left unchanged.
  *
+ * A positive {@code DELTA} brightens the image; a negative value would darken it.
+ *
+ * Implementation strategy: purely recursive. No loops are
+ * used anywhere. Pixel traversal is performed via tail recursion in row major
+ * order, mirroring the approach used in the Invert converter but with a
+ * completely different per-pixel operation.
  * @author Koosha Shamdani
  */
 public class Brightness extends Converter{
     
     private static final int DELTA = 50;
-    
+    /**
+     * Brightens the image by {@value #DELTA} units per channel.
+     *
+     * @param image the source image
+     * @return a new brightened image of the same dimensions
+     */
     @Override
     protected BufferedImage process(BufferedImage image){
         int width = image.getWidth(); 
@@ -25,6 +39,18 @@ public class Brightness extends Converter{
         processPixel(image, result, 0, 0, width, height); 
         return result; 
     }
+
+    /**
+     * Recursively processes every pixel in row major order, adding {@value #DELTA}
+     * to each colour channel and clamping the result.
+     *
+     * @param src    the source image (read only)
+     * @param dst    the destination image (written to)
+     * @param x      current column index
+     * @param y      current row index
+     * @param width  image width
+     * @param height image height
+     */
     
 private void processPixel(BufferedImage src, BufferedImage dst, int x, int y, int width, int height) {
     
