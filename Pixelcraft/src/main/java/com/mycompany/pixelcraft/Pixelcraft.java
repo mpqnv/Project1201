@@ -29,7 +29,7 @@ package com.mycompany.pixelcraft;
              // Create an object of the class named 'converterName'
              // Read this link for more info about Java Reflection: https://www.oracle.com/technical-resources/articles/java/javareflection.html
              // Java reflection is NOT required knowledge for this course. 
-             Class<?> clazz = Class.forName("com.mycompany.pixelcraft." + converterName);
+             Class<?> clazz = Class.forName(converterName);
              Converter converter = (Converter) clazz.getDeclaredConstructor().newInstance();
              // The class named 'converterName' must be a subclass of 'Converter'
              // Call the convert method
