@@ -22,80 +22,28 @@ import java.awt.image.BufferedImage;
  *
  * @author Koosha Shamdani
  */
-public class Brightness extends Converter {
+public class Brightness extends RecursiveConverter {
 
-    /** The amount added to each colour channel per pixel. */
     private static final int DELTA = 50;
 
     /**
-     * Brightens the image by {@value #DELTA} units per colour channel.
+     * Transforms a single pixel by adding {@value #DELTA} to each of the
+     * red, green, and blue channels. Each channel is clamped to [0, 255]
+     * to prevent overflow. The alpha channel is preserved unchanged.
      *
-     * @param image the source image
-     * @return a new brightened image of the same dimensions
+     * @param pixel the source pixel as a packed ARGB {@code int}
+     * @return a new packed ARGB {@code int} with brightened RGB channels
      */
     @Override
-    protected BufferedImage process(BufferedImage image) {
-        int width = image.getWidth();
-        int height = image.getHeight();
-
-        // Create a blank output image with the same dimensions as the source
-        BufferedImage result = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-
-        // Begin recursive traversal from the first row
-        processRow(image, result, 0, width, height);
-        return result;
-    }
-
-    /**
-     * Recursively processes one row at a time in top to bottom order.
-     * Delegates per pixel work to {@link #processPixel}, then recurses
-     * to the next row. Terminates when {@code y} reaches {@code height}.
-     *
-     * @param src    the source image (read-only)
-     * @param dst    the destination image (written to)
-     * @param y      the current row index
-     * @param width  image width
-     * @param height image height
-     */
-    private void processRow(BufferedImage src, BufferedImage dst, int y, int width, int height) {
-        // Base case
-        if (y >= height) return;
-
-        // Process every pixel in this row, starting from the leftmost column
-        processPixel(src, dst, 0, y, width, height);
-
-        // Move on to the next row
-        processRow(src, dst, y + 1, width, height);
-    }
-
-    /**
-     * Recursively processes one pixel at a time across a single row,
-     * left to right. Adds {@value #DELTA} to each colour channel, clamping
-     * results to [0, 255] via {@link ARGB#clamp(int)}. The alpha channel is
-     * preserved unchanged. Terminates when {@code x} reaches {@code width}.
-     *
-     * @param src    the source image (read only)
-     * @param dst    the destination image (written to)
-     * @param x      the current column index
-     * @param y      the current row index
-     * @param width  image width
-     * @param height image height
-     */
-    private void processPixel(BufferedImage src, BufferedImage dst, int x, int y, int width, int height) {
-        // Base case
-        if (x >= width) return;
-
-        // Unpack the pixel and add DELTA to each colour channel, clamping to [0, 255]
-        ARGB p = new ARGB(src.getRGB(x, y));
-        ARGB bright = new ARGB(
+    protected int transformPixel(int pixel) {
+        // Unpack the raw pixel into individual ARGB components
+        ARGB p = new ARGB(pixel);
+         // Add DELTA to each colour channel, clamping to keep values in [0, 255]
+        return new ARGB(
             p.alpha,
-            ARGB.clamp(p.red   + DELTA),
+            ARGB.clamp(p.red + DELTA),
             ARGB.clamp(p.green + DELTA),
-            ARGB.clamp(p.blue  + DELTA)
-        );
-        dst.setRGB(x, y, bright.toInt());
-
-        // Move on to the next pixel in this row
-        processPixel(src, dst, x + 1, y, width, height);
+            ARGB.clamp(p.blue + DELTA)
+        ).toInt();
     }
 }

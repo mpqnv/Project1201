@@ -4,7 +4,6 @@
  */
 package com.mycompany.pixelcraft;
 import java.awt.image.BufferedImage;
-import java.awt.Color; 
 /**
  * Applies a warm sepia tone effect to the image, giving it an aged,
  * brownish appearance similar to old photographs.
@@ -16,7 +15,7 @@ import java.awt.Color;
  *   outB = clamp(0.272*R + 0.534*G + 0.131*B)
  * 
  * The alpha channel is preserved unchanged.
- *
+ * 
  * Implementation strategy: iterative (nested for loops over every pixel).
  * @author Alper Diker
  */
@@ -38,33 +37,18 @@ public class Sepia extends Converter {
         // Go through every pixel in the image
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
-                int rgb = image.getRGB(x, y);
-                Color color = new Color(rgb, true);
+                ARGB p = new ARGB(image.getRGB(x, y));
 
-                // Get individual color channels
-                int red = color.getRed();
-                int green = color.getGreen();
-                int blue = color.getBlue();
-
-                // Apply the sepia transformation formulas
-                int newRed = (int)(0.393 * red + 0.769 * green + 0.189 * blue);
-                int newGreen = (int)(0.349 * red + 0.686 * green + 0.168 * blue);
-                int newBlue = (int)(0.272 * red + 0.534 * green + 0.131 * blue);
-
-                // Check for overflow (must stay between 0 and 255)
-                if (newRed > 255) newRed = 255;
-                if (newGreen > 255) newGreen = 255;
-                if (newBlue > 255) newBlue = 255;
-                if (newRed < 0) newRed = 0;
-                if (newGreen < 0) newGreen = 0;
-                if (newBlue < 0) newBlue = 0;
+                // Get individual color channels and apply the sepia transformation formulas
+                int newRed   = ARGB.clamp((int)(0.393 * p.red + 0.769 * p.green + 0.189 * p.blue));
+                int newGreen = ARGB.clamp((int)(0.349 * p.red + 0.686 * p.green + 0.168 * p.blue));
+                int newBlue  = ARGB.clamp((int)(0.272 * p.red + 0.534 * p.green + 0.131 * p.blue));
 
                 // Set the new color to the pixel
-                Color sepiaColor = new Color(newRed, newGreen, newBlue, color.getAlpha());
-                sepiaImage.setRGB(x, y, sepiaColor.getRGB());
+                sepiaImage.setRGB(x, y, new ARGB(p.alpha, newRed, newGreen, newBlue).toInt());
             }
         }
-
+        //Return the final image
         return sepiaImage;
     }
 }

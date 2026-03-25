@@ -42,6 +42,7 @@ public class Rotate extends Converter{
                 result.setRGB(destX, destY, pixel); 
             }
         }
+        //Return the final image
         return result; 
     }
     

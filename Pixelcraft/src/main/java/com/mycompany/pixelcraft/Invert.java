@@ -3,7 +3,6 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package com.mycompany.pixelcraft;
-import java.awt.image.BufferedImage; 
 
 /**
  * Produces a negative of the image by inverting each colour channel:
@@ -21,76 +20,24 @@ import java.awt.image.BufferedImage;
  * stack overflow on real world images.
  * @author Alper Diker
  */
-public class Invert extends Converter {
-    /**
-     * Applies the invert (negative) filter to the given image.
+public class Invert extends RecursiveConverter {
+ /**
+     * Transforms a single pixel by inverting each RGB channel using
+     * {@code channel' = 255 - channel}. The alpha channel is extracted
+     * and repacked unchanged to preserve transparency.
      *
-     * @param image the source image
-     * @return a new inverted image of the same dimensions
+     * @param pixel the source pixel as a packed ARGB {@code int}
+     * @return a new packed ARGB {@code int} with all RGB channels inverted
      */
     @Override
-    protected BufferedImage process(BufferedImage image) {
-        int width = image.getWidth();
-        int height = image.getHeight();
-
-        // Create a blank output image with the same dimensions and type as the source
-        BufferedImage result = new BufferedImage(width, height, image.getType());
-
-        // Begin recursive traversal from the first row
-        processRow(image, result, 0, width, height);
-        return result;
-    }
-
-    /**
-     * Recursively processes one row at a time in top to bottom order.
-     * Delegates per pixel work to {@link #processPixel}, then recurses
-     * to the next row. Terminates when {@code y} reaches {@code height}.
-     *
-     * @param src    the source image (read only)
-     * @param dst    the destination image (written to)
-     * @param y      the current row index
-     * @param width  image width
-     * @param height image height
-     */
-    private void processRow(BufferedImage src, BufferedImage dst, int y, int width, int height) {
-        // Base case
-        if (y >= height) return;
-
-        // Process every pixel in this row, starting from the leftmost column
-        processPixel(src, dst, 0, y, width, height);
-
-        // Move on to the next row
-        processRow(src, dst, y + 1, width, height);
-    }
-
-    /**
-     * Recursively processes one pixel at a time across a single row,
-     * left to right. Inverts the red, green, and blue channels of each
-     * pixel while preserving alpha. Terminates when {@code x} reaches
-     * {@code width}.
-     *
-     * @param src    the source image (read only)
-     * @param dst    the destination image (written to)
-     * @param x      the current column index
-     * @param y      the current row index
-     * @param width  image width
-     * @param height image height
-     */
-    private void processPixel(BufferedImage src, BufferedImage dst, int x, int y, int width, int height) {
-        // Base case
-        if (x >= width) return;
-
-        // Unpack the packed ARGB integer into individual channels
-        int rgb = src.getRGB(x, y);
-        int a = (rgb >> 24) & 255;
-        int r = (rgb >> 16) & 255;
-        int g = (rgb >> 8)  & 255;
-        int b =  rgb        & 255;
-
-        // Invert each colour channel by subtracting from 255; leave alpha unchanged
-        dst.setRGB(x, y, (a << 24) | ((255 - r) << 16) | ((255 - g) << 8) | (255 - b));
-
-        // Move on to the next pixel in this row
-        processPixel(src, dst, x + 1, y, width, height);
+    protected int transformPixel(int pixel) {
+        // Unpack each channel by shifting and masking to isolate 8-bit values
+        int a = (pixel >> 24) & 255;
+        int r = (pixel >> 16) & 255;
+        int g = (pixel >> 8) & 255;
+        int b =  pixel & 255;
+        // Invert each RGB channel and repack into a single ARGB int
+        // Alpha is preserved; each colour channel is replaced by its complement
+        return (a << 24) | ((255 - r) << 16) | ((255 - g) << 8) | (255 - b);
     }
 }

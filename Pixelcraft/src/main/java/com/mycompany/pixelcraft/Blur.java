@@ -69,6 +69,7 @@ public class Blur extends Converter{
                 result.setRGB(x, y, blured.toInt()); 
             }
         }
+        //Return the final image
         return result;
     }
     

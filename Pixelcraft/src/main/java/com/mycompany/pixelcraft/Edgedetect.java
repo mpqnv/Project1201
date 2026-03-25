@@ -103,6 +103,7 @@ public class Edgedetect extends Converter{
                 gray[y][x] = (int)(0.299 *p.red + 0.587 * p.green + 0.114 * p.blue); 
             }
         }
+        //Return the final product
         return gray; 
     }
     

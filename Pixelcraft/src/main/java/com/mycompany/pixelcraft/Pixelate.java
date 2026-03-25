@@ -80,7 +80,7 @@ public class Pixelate extends Converter{
                 count++; 
             }
         }
-        
+        //Return the final result
         return new ARGB((int)(sumA / count), (int)(sumR / count), (int)(sumG / count), (int)(sumB / count)); 
     }
     

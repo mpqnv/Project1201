@@ -43,7 +43,7 @@ public class Fliphorizontal extends Converter {
                 result.setRGB(mirroredX, y, pixel);
             }
         }
-
+        //Return the final image
         return result;
     }
 }

@@ -20,7 +20,7 @@
             <configuration>
                 <mainClass>com.mycompany.pixelcraft.PixelCraft</mainClass>
                 <arguments>
-                    <argument>Sepia</argument>
+                    <argument>Invert</argument>
                     <argument>toronto.png</argument>
                 </arguments>
             </configuration>
